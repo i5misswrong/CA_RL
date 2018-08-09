@@ -15,12 +15,13 @@ import matplotlib.pyplot as plt
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions 动作空间
 GAMMA = 0.99 # decay rate of past observations 折扣因子
-OBSERVE = 100000. # timesteps to observe before training 训练前观察到的时间步
+OBSERVE = 1000. # timesteps to observe before training 训练前观察到的时间步
 EXPLORE = 2000000. # frames over which to anneal epsilon  ？？
 FINAL_EPSILON = 0.0001 # final value of epsilon ？？
 INITIAL_EPSILON = 0.0001 # starting value of epsilon ？？
 REPLAY_MEMORY = 50000 # number of previous transitions to remember 之前的记忆数量
 BATCH = 32 # size of minibatch  训练批次尺寸
+# BATCH=10
 FRAME_PER_ACTION = 1
 
 def weight_variable(shape):  #初始化weight
@@ -120,7 +121,8 @@ def trainNetwork(s, readout, h_fc1, sess):
 
     # saving and loading networks
     saver = tf.train.Saver()  # 检查点， 用于保存和载入数据
-    sess.run(tf.initialize_all_variables()) #初始化所有变量
+    # sess.run(tf.initialize_all_variables()) #初始化所有变量
+    sess.run(tf.global_variables_initializer())  # 初始化所有变量
     checkpoint = tf.train.get_checkpoint_state("saved_networks") #获取之前保存的训练数据
     if checkpoint and checkpoint.model_checkpoint_path: #如果路径存在
         saver.restore(sess, checkpoint.model_checkpoint_path) #载入数据
@@ -131,7 +133,7 @@ def trainNetwork(s, readout, h_fc1, sess):
     # start training
     epsilon = INITIAL_EPSILON  #初始ε  这个ε是什么。。
     # 根据概率ε来选择一个动作
-    t = 10000
+    t = 0
     while "flappy bird" != "angry bird": #启动游戏
         # choose an action epsilon greedily
         readout_t = readout.eval(feed_dict={s : [s_t]})[0]#神经网络的输入
