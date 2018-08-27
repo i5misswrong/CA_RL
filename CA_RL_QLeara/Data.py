@@ -1,0 +1,6 @@
+FLAG=True
+
+ROOM_M=7
+ROOM_N=7
+
+PEOPLE_NUMBER=1
